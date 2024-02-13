@@ -1,0 +1,87 @@
+### 0.1 Get Project
+GET http://admin:admin@localhost:8111/app/rest/projects
+Accept: application/json
+
+### 0.2 Get Build Conf
+GET http://admin:admin@localhost:8111/app/rest/buildTypes/id:SpringCoreForQa_Build
+Accept: application/json
+
+
+### 0. Get token
+GET http://admin:admin@localhost:8111/authenticationTest.html?csrf
+Accept: application/json
+
+
+### 1. Create Project
+POST http://admin:admin@localhost:8111/app/rest/projects
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token: ea10ac43-f91b-445e-bb12-bfd42dcf035e
+
+{
+  "parentProject": {
+    "locator": "_Root"
+  },
+  "name": "ProjectName",
+  "id": "idId",
+  "copyAllAssociatedSettings": true
+}
+
+
+### 2. Create Build Conf
+POST http://admin:admin@localhost:8111/app/rest/buildTypes
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token: ea10ac43-f91b-445e-bb12-bfd42dcf035e
+
+
+{
+  "id": "BuildConfId",
+  "name": "BuildConfName",
+  "project": {
+    "id": "idId"
+  },
+  "steps": {
+    "step": [
+      {
+        "name": "myCommandLineStep",
+        "type": "simpleRunner",
+        "properties": {
+          "property": [
+            {
+              "name": "script.content",
+              "value": "echo 'Hello World!'"
+            },
+            {
+              "name": "teamcity.step.mode",
+              "value": "default"
+            },
+            {
+              "name": "use.custom.script",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+### 3. Run Build
+POST http://admin:admin@localhost:8111/app/rest/buildQueue
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token: ea10ac43-f91b-445e-bb12-bfd42dcf035e
+
+
+{
+  "buildType": {
+    "id": "BuildConfId"
+  }
+}
+
+
+### 4. Check build status
+GET http://admin:admin@localhost:8111/app/rest/buildQueue?locator=buildType(id:BuildConfId)
+Content-Type: application/json
+Accept: application/json
