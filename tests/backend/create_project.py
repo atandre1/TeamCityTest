@@ -1,10 +1,25 @@
 import pytest
 import requests
 
+from custom_requester.custom_requester import CustomRequester
+from data.project_data import ProjectData
+
 BASE_URL = 'http://admin:admin@localhost:8111'
+
+
+class CustomRequestor:
+    pass
+
+
 class TestProjectCreate:
 
+    @classmethod
+    def setup_class(cls):
+        cls.project_data= ProjectData.create_project_data()
+        cls.create_project_id = cls.project_data["id"]
+
     def test_project_create(self):
+        requester=CustomRequester(requests.Session())
         # Получение токена
         auth_response = requests.get(url = f"{BASE_URL}/authenticationTest.html?csrf)", auth=('admin', 'admin'))
         csrf_token = auth_response.text
